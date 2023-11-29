@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<com.sigasi.hdt.shared.librarymapping.model:LibraryMappings xmlns:com.sigasi.hdt.shared.librarymapping.model="com.sigasi.hdt.vhdl.scoping.librarymapping" Version="2">
+  <Mappings Location="Common Libraries/IEEE" Library="ieee"/>
+  <Mappings Location="Common Libraries/IEEE Synopsys" Library="ieee"/>
+  <Mappings Location="Common Libraries" Library="not mapped"/>
+  <Mappings Location="Common Libraries/unisim/primitive" Library="not mapped"/>
+  <Mappings Location="Common Libraries/unisim/retarget" Library="not mapped"/>
+  <Mappings Location="Common Libraries/unisim/retarget_VCOMP.vhd" Library="not mapped"/>
+  <Mappings Location="Common Libraries/unisim/secureip" Library="not mapped"/>
+  <Mappings Location="Common Libraries/unisim/unisim_retarget_VCOMP.vhd" Library="not mapped"/>
+  <Mappings Location="Common Libraries/osvvm" Library="osvvm"/>
+  <Mappings Location="src/complex.vhd" Library="src"/>
+  <Mappings Location="src/dummy.vhd" Library="src"/>
+  <Mappings Location="tb/tb_demo.vhd" Library="src"/>
+  <Mappings Location="tb/tb_unisim_test.vhd" Library="src"/>
+  <Mappings Location="Common Libraries/STD" Library="std"/>
+  <Mappings Location="Common Libraries/unisim" Library="unisim"/>
+  <Mappings Location="Common Libraries/vunit_lib" Library="vunit_lib"/>
+  <Mappings Location="" Library="work"/>
+</com.sigasi.hdt.shared.librarymapping.model:LibraryMappings>
