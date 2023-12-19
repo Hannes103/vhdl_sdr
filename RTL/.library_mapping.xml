@@ -10,7 +10,16 @@
   <Mappings Location="Common Libraries/unisim/unisim_retarget_VCOMP.vhd" Library="not mapped"/>
   <Mappings Location="Common Libraries/osvvm" Library="osvvm"/>
   <Mappings Location="src/complex.vhd" Library="src"/>
+  <Mappings Location="src/dsp/cic_decimator.vhd" Library="src"/>
+  <Mappings Location="src/dsp/cic_filter.vhd" Library="src"/>
+  <Mappings Location="src/dsp/dds_generator.vhd" Library="src"/>
+  <Mappings Location="src/dsp/dds_generator_pgk.vhd" Library="src"/>
+  <Mappings Location="src/dsp/iq_demod.vhd" Library="src"/>
   <Mappings Location="src/dummy.vhd" Library="src"/>
+  <Mappings Location="tb/dsp/tb_cic_decimator.vhd" Library="src"/>
+  <Mappings Location="tb/dsp/tb_cic_filter.vhd" Library="src"/>
+  <Mappings Location="tb/dsp/tb_dds_generator.vhd" Library="src"/>
+  <Mappings Location="tb/dsp/tb_iq_demod.vhd" Library="src"/>
   <Mappings Location="tb/tb_demo.vhd" Library="src"/>
   <Mappings Location="tb/tb_unisim_test.vhd" Library="src"/>
   <Mappings Location="Common Libraries/STD" Library="std"/>
