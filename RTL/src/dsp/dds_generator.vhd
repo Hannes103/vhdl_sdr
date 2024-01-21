@@ -3,6 +3,8 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
+use ieee.math_real.all;
+
 use work.dds_generator_pgk.all;
 
 entity dds_generator is
@@ -224,7 +226,6 @@ begin
             else
                 -- we support a synchonous clock enable so that a external prescaler can be used.
                 if i_clk_en = '1' then
-                    
                     -- step 0: load external signals into internal buffer registers
                     
                     s_phase_step <= unsigned(i_phase_step);

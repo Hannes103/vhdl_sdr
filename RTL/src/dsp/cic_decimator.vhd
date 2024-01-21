@@ -6,6 +6,10 @@ use ieee.numeric_std.all;
 use ieee.math_real.all;
 use ieee.fixed_pkg.all;
 
+-- This entity implements a generic cic-decimator filter.
+-- Decimation factor and filter order are configurable via the G_ORDER and G_DECIMATOR generics.
+--
+-- Input and output data width, fractional part size and the increased output resolution can also be configured via generics.
 entity cic_decimator is
     
     generic(
@@ -34,13 +38,38 @@ entity cic_decimator is
     );
     
     port(
+        -- Input clock signal used to clock all synchronous logic inside of this module.
         i_clk : in std_logic;
+        
+        -- Synchronous active high reset signal.
+        -- Resets the internal registers to their default values and prevents any output from being generated.
         i_rst : in std_logic;
         
+        -- N-bit fixed point input data.
+        -- This data will be filterd and decimated using the specified settings.
+        -- The width (integer and fractional part) can be specified using the G_INPUT_WIDTH and G_INPUT_FRACTIONAL_BITS generics.
+        --
+        -- Input data will be latched on the rising edge of i_clk every time that i_input_valid is high.
         i_input  : in sfixed(G_INPUT_WIDTH - 1 downto -G_INPUT_FRACTIONAL_BITS);
+        
+        -- Active high, Input valid signal.
+        --
+        -- The i_input signal will be latched on the rising clock edge every time this signal is high.
+        -- The internal processing of samples (decimation, filtering, etc...) is paused while this flag is low.
         i_input_valid : in std_logic;
         
+        -- Filtered output data.
+        --
+        -- The filtered output data will be presented here. Its resolution can be optionally increased by up to LOG2(DECIMATION) bits
+        -- if configured via the G_OUTPUT_FRACTIONAL_BITS generic.
+        --
+        -- This data is valid every time the o_output_valid signal is high.
         o_output : out sfixed(G_INPUT_WIDTH - 1 downto -(G_OUTPUT_FRACTIONAL_BITS + G_INPUT_FRACTIONAL_BITS));
+        
+        -- Active high output valid signal.
+        --
+        -- The output o_output is valid while this flag is high.
+        -- Will not be active while i_rst is high or if no valid input samples are presented to the filter.
         o_output_valid : out std_logic
     );
     

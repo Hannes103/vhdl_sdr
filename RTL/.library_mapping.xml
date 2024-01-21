@@ -12,16 +12,26 @@
   <Mappings Location="src/complex.vhd" Library="src"/>
   <Mappings Location="src/dsp/cic_decimator.vhd" Library="src"/>
   <Mappings Location="src/dsp/cic_filter.vhd" Library="src"/>
+  <Mappings Location="src/dsp/costas_loop.vhd" Library="src"/>
   <Mappings Location="src/dsp/dds_generator.vhd" Library="src"/>
+  <Mappings Location="src/dsp/dds_generator2.vhd" Library="src"/>
   <Mappings Location="src/dsp/dds_generator_pgk.vhd" Library="src"/>
   <Mappings Location="src/dsp/iq_demod.vhd" Library="src"/>
+  <Mappings Location="src/dsp/pid_controller.vhd" Library="src"/>
+  <Mappings Location="src/dsp/pid_simple.vhd" Library="src"/>
+  <Mappings Location="src/dsp/shift_register.vhd" Library="src"/>
   <Mappings Location="src/dummy.vhd" Library="src"/>
+  <Mappings Location="src/shift_register.vhd" Library="src"/>
+  <Mappings Location="src/util/linear_feedback_shift_register.vhd" Library="src"/>
   <Mappings Location="tb/dsp/tb_cic_decimator.vhd" Library="src"/>
   <Mappings Location="tb/dsp/tb_cic_filter.vhd" Library="src"/>
   <Mappings Location="tb/dsp/tb_dds_generator.vhd" Library="src"/>
   <Mappings Location="tb/dsp/tb_iq_demod.vhd" Library="src"/>
+  <Mappings Location="tb/dsp/tb_pid_simple.vhd" Library="src"/>
   <Mappings Location="tb/tb_demo.vhd" Library="src"/>
+  <Mappings Location="tb/tb_shift_register.vhd" Library="src"/>
   <Mappings Location="tb/tb_unisim_test.vhd" Library="src"/>
+  <Mappings Location="tb/util/tb_linear_feedback_shift_register.vhd" Library="src"/>
   <Mappings Location="Common Libraries/STD" Library="std"/>
   <Mappings Location="Common Libraries/unisim" Library="unisim"/>
   <Mappings Location="Common Libraries/vunit_lib" Library="vunit_lib"/>

@@ -9,8 +9,4 @@ result.cos = result.cos / MAX_VALUE;
 result.sin = result.sin / MAX_VALUE;
 
 % spectrum
-pspectrum(result.cos, FS)
-
-
-plot(result.cos);
-ylim([-1.1, 1.1]);
+pspectrum(sqrt(2)*result.cos, FS, FrequencyResolution=10e3);

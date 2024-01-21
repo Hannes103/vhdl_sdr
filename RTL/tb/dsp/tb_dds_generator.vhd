@@ -17,12 +17,11 @@ entity tb_dds_generator is
 end entity;
 
 architecture tb of tb_dds_generator is
-    constant C_OUTPUT_FREQUENCY : real := 25.0e6;
+    constant C_OUTPUT_FREQUENCY : real     := 25.0e6;
     constant C_NUMBER_OF_SAMPLES : integer := 100e3;
     
-    constant C_PHASE_WIDTH : integer := 10;
-    
-    constant C_PHASE_FRACTIONAL_BITS : integer := 12;
+    constant C_PHASE_WIDTH : integer           := 11;
+    constant C_PHASE_FRACTIONAL_BITS : integer := 16;
     
     constant C_SIGNAL_WIDTH : integer := 16;
     
@@ -38,9 +37,9 @@ begin
     CreateClock(s_clk, 10 ns);
     
     proc_main : process
-        file fresult : text;
+        file     fresult : text;
         variable fstatus : file_open_status;
-        variable output : line;
+        variable output  : line;
     begin
         test_runner_setup(runner, runner_cfg);
 
@@ -61,7 +60,7 @@ begin
                     write(output, to_integer(signed(s_cos)), RIGHT, 6  );
                     write(output, to_integer(signed(s_sin)), RIGHT, 12 );
                     writeline(fresult, output);
-                    
+                
                     WaitForClock(s_clk);
                 end loop;
                 
