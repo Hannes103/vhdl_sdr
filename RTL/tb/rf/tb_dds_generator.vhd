@@ -4,6 +4,7 @@ context vunit_lib.vunit_context;
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+use ieee.math_real.all;
 
 use std.textio.all;
 
@@ -13,15 +14,14 @@ library osvvm;
 context osvvm.OsvvmContext;
 
 entity tb_dds_generator is
-  generic (runner_cfg : string; tb_path : string); -- @suppress "Naming convention violation: generic name should match pattern '(C|G)_([A-Z0-9_]*)'"
+  generic ( runner_cfg : string; output_path : string; target_freq : string; samples : string); -- @suppress "Naming convention violation: generic name should match pattern '(C|G)_([A-Z0-9_]*)'"
 end entity;
 
 architecture tb of tb_dds_generator is
-    constant C_OUTPUT_FREQUENCY : real     := 25.0e6;
-    constant C_NUMBER_OF_SAMPLES : integer := 100e3;
+    constant C_NUMBER_OF_SAMPLES : integer := integer(real'value(samples));
     
-    constant C_PHASE_WIDTH : integer           := 11;
-    constant C_PHASE_FRACTIONAL_BITS : integer := 16;
+    constant C_PHASE_WIDTH : integer           := 10;
+    constant C_PHASE_FRACTIONAL_BITS : integer := 11;
     
     constant C_SIGNAL_WIDTH : integer := 16;
     
@@ -40,6 +40,9 @@ begin
         file     fresult : text;
         variable fstatus : file_open_status;
         variable output  : line;
+        
+        -- output file name
+        constant C_FILE_NAME :  string := output_path & "/carrier.txt";
     begin
         test_runner_setup(runner, runner_cfg);
 
@@ -49,19 +52,23 @@ begin
             -- reset peripheral
             s_rst <= '1';
             WaitForClock(s_clk, 1);
-            s_phase_step <= to_phase_increment(C_PHASE_WIDTH, C_PHASE_FRACTIONAL_BITS, 100.0e6, C_OUTPUT_FREQUENCY);
+            s_phase_step <= to_phase_increment(C_PHASE_WIDTH, C_PHASE_FRACTIONAL_BITS, 100.0e6, real'value(target_freq));
             s_rst <= '0';
-            
+
             if run("export_data") then
-                -- open output file for writing
-                file_open(fstatus, fresult, tb_path & "../../../Matlab/carrier.txt", write_mode);
                 
-                for i in 0 to C_NUMBER_OF_SAMPLES loop
+                -- open output file for writing
+                file_open(fstatus, fresult, C_FILE_NAME, write_mode);
+                if fstatus /= OPEN_OK then
+                    report "File " & C_FILE_NAME & " cannot be opened for writing!" severity error;    
+                end if;
+                
+                -- output the specified number of samples
+                for i in 0 to C_NUMBER_OF_SAMPLES loop                               
+                    WaitForClock(s_clk);
                     write(output, to_integer(signed(s_cos)), RIGHT, 6  );
                     write(output, to_integer(signed(s_sin)), RIGHT, 12 );
                     writeline(fresult, output);
-                
-                    WaitForClock(s_clk);
                 end loop;
                 
                 flush(fresult);
@@ -80,7 +87,7 @@ begin
             G_PHASE_FRACTIONAL_BITS => C_PHASE_FRACTIONAL_BITS,
             G_SIGNAL_WIDTH          => C_SIGNAL_WIDTH,
             
-            G_ENABLE_INTERPOLATION  => true,
+            G_ENABLE_INTERPOLATION  => false,
             G_INVERT_OUTPUT         => true,
             G_ENABLE_SHIFTED_OUTPUT => true,
             G_INVERT_SHIFTED_OUTPUT => false

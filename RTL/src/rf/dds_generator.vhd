@@ -7,19 +7,26 @@ use ieee.math_real.all;
 
 use work.dds_generator_pgk.all;
 
+-- This entity implements a direct digital synthesis sine/cosin wave generator.
+-- Its used to generate the carrier waves used for modulation/demodulation.
+--
+-- It supports pretty arbirary frequency generation and configureable bit width and output settings.
 entity dds_generator is
 
     generic(
         -- Specifies the number of bits that are used for integer part of the phase accumulator.
-        -- The number of points in the sine lookup table will be: 2**G_PHASE_WIDTH
-        G_PHASE_WIDTH : integer := 5;
+        -- The number of points in the sine lookup table will be: 2**G_PHASE_WIDTH.
+        --
+        -- This valus has a strong influence on the spur free dynamic range of the generate sine wave.
+        -- An estimation of SFDR is obtained via the following formular: SFDR = 6dBc * G_PHASE_WIDTH - 4dBc
+        G_PHASE_WIDTH : integer := 10;
         
         -- Specifies the number of fractional bits that are used in the phase accomulator.
         -- The granularity of the phase increment is defined by this number.
-        G_PHASE_FRACTIONAL_BITS : integer := 10;
+        G_PHASE_FRACTIONAL_BITS : integer := 11;
         
         -- Specifies the output data width of the generated sinusodial signal.
-        G_SIGNAL_WIDTH : integer := 10;
+        G_SIGNAL_WIDTH : integer := 16;
         
         -- If this parameter is set to true then the output sine/cosine wave(s) will be linearly interpolated using the
         -- fractional phase accumulator. If set to false then only the lookup table values will be used.
@@ -54,6 +61,7 @@ entity dds_generator is
         
         -- Phase accumulator step size input. 
         -- This input directly controls the phase increment each clock cycle and can as such be used to control the output waveforms frequency.
+        -- It will be loaded when i_phase_step_valid is high.
         -- Affects both output waveforms (shifted/non shifted).
         --
         -- Data is stored in a fixed point format with the most significant G_PHASE_WIDTH bits as the integer component and the least sigificant G_PHASE_FRACTIONAL_BITS
@@ -66,6 +74,13 @@ entity dds_generator is
         -- The to_phase_increment() function on the dds_generator_pgk can be used to convert the real phase step to a fixed point std_logic_vector() representation.
         i_phase_step : in std_logic_vector(G_PHASE_WIDTH + G_PHASE_FRACTIONAL_BITS - 1 downto 0);
         
+        -- Phase accumlator phase step size load flag.
+        -- This input controls when the phase step input will be loaded from the "i_phase_step" signal.
+        -- If high then the internal phase step register will be updated with the presented value on the next clock edge.
+        --
+        -- This signal is optional and if not connected the i_phase_step input will be loaded every clock cycle.
+        i_phase_step_valid : in std_logic := '1';
+        
         -- Generated wave form output, not shifted.
         -- Outputs a sin(x) if G_INVERT_OUTPUT is false, outputs a -sin(x) if G_INVERT_OUTPUT is true.
         --
@@ -73,7 +88,7 @@ entity dds_generator is
         -- Output format is signed decimal.
         --
         -- With the default generic configuration this output will be a -sin(x)
-        o_output         : out std_logic_vector(G_SIGNAL_WIDTH - 1 downto 0);
+        o_output : out std_logic_vector(G_SIGNAL_WIDTH - 1 downto 0);
         
         -- Generated wave form output, shifted.
         -- Only active if G_ENABLE_SHIFTED_OUTPUT set to true. Otherwise its forced to zero.
@@ -99,7 +114,7 @@ architecture behav of dds_generator is
     signal s_phase_step : unsigned(G_PHASE_WIDTH + G_PHASE_FRACTIONAL_BITS - 1 downto 0);
     
     -- internal counter used for phase accumulator
-    signal s_phase_counter : unsigned(G_PHASE_WIDTH + G_PHASE_FRACTIONAL_BITS - 1 downto 0) := (others => '0');
+    signal s_phase_counter : unsigned(G_PHASE_WIDTH + G_PHASE_FRACTIONAL_BITS - 1 downto 0);
     signal s_phase : unsigned(G_PHASE_WIDTH - 1 downto 0);
     signal s_phase_shifted : unsigned(G_PHASE_WIDTH - 1 downto 0);
     signal s_phase_frac : unsigned(G_PHASE_FRACTIONAL_BITS - 1 downto 0);
@@ -177,11 +192,21 @@ architecture behav of dds_generator is
         else
             -- step 1: write table value to output register
             -- if we do not do any linear interpolation then there is no need to 
-            p_output_reg <= s_table_out;
+            
+            -- use a temporary register to invert the output if required
+            if C_INVERT_SIGNAL then
+                p_table_out_delay <= -p_table_out;
+            else
+                p_table_out_delay <= p_table_out;
+            end if;
+            
+            -- othrewise output directly
+            p_output_reg <= p_table_out_delay;
+
         end if;
     end procedure update_output_register;
 begin
-    
+
     proc_phase_counter : process(i_clk) is
     begin
         -- everyhint here is synchronous logic
@@ -191,6 +216,8 @@ begin
             if i_rst = '1' then
                 -- counter register must always be reset
                 s_phase_counter <= (others => '0');
+                s_phase <= (others => '0');
+                s_phase_frac <= (others => '0');
                 
                 -- reset internal buffer registers
                 s_phase_step <= (others => '0');
@@ -206,6 +233,8 @@ begin
                     
                     -- if we have a shifted output then we also need to reset its registers
                     if G_ENABLE_SHIFTED_OUTPUT then
+                        s_phase_shifted <= (others => '0');
+                        
                         s_table_diff_shifted <= (others => '0');
                 
                         s_table_interp_shifted <= (others => '0');
@@ -213,7 +242,11 @@ begin
                     
                         s_table_sum_shifted <= (others => '0');
                     end if;
-                    
+                else
+                    s_table_out_delay <= (others => '0');
+                    if G_ENABLE_SHIFTED_OUTPUT then
+                        s_table_out_delay_shifted <= (others => '0');
+                    end if;
                 end if;
     
                 -- reset output register
@@ -228,7 +261,9 @@ begin
                 if i_clk_en = '1' then
                     -- step 0: load external signals into internal buffer registers
                     
-                    s_phase_step <= unsigned(i_phase_step);
+                    if i_phase_step_valid = '1' then
+                        s_phase_step <= unsigned(i_phase_step);
+                    end if;
                     
                     -- step 1: increment phase counter
                     
@@ -237,7 +272,18 @@ begin
                     -- at least on average
                     s_phase_counter <= s_phase_counter + s_phase_step;
                     
-                    -- step 2 to 5: generate wave form
+                    -- step 2: generate address info for lookup table
+    
+                    -- extract correct fields from phase (integer + fractional part)
+                    s_phase <= s_phase_counter(G_PHASE_WIDTH + G_PHASE_FRACTIONAL_BITS - 1 downto G_PHASE_FRACTIONAL_BITS);
+                    s_phase_frac <= s_phase_counter(G_PHASE_FRACTIONAL_BITS - 1 downto 0);
+                    
+                    if G_ENABLE_SHIFTED_OUTPUT then
+                        -- contains the shifted phase counter, its offset by exactly pi/2 (90 deg)
+                        s_phase_shifted <= s_phase_counter(G_PHASE_WIDTH + G_PHASE_FRACTIONAL_BITS - 1 downto G_PHASE_FRACTIONAL_BITS) + 2**(G_PHASE_WIDTH - 2);
+                    end if;
+                    
+                    -- step 3 to 6: generate wave form
                     
                     -- update non shifted output
                     update_output_register(
@@ -272,16 +318,6 @@ begin
             end if;
         end if;
     end process proc_phase_counter;
-    
-    -- extract correct fields from phase (integer + fractional part)
-    -- this can always be done combinatorically 
-    s_phase <= s_phase_counter(G_PHASE_WIDTH + G_PHASE_FRACTIONAL_BITS - 1 downto G_PHASE_FRACTIONAL_BITS);
-    s_phase_frac <= s_phase_counter(G_PHASE_FRACTIONAL_BITS - 1 downto 0);
-    
-    gen_shifted_phase_assign: if G_ENABLE_SHIFTED_OUTPUT generate
-        -- contains the shifted phase counter, its offset by exactly pi/4 (90 deg)
-        s_phase_shifted <= s_phase_counter(G_PHASE_WIDTH + G_PHASE_FRACTIONAL_BITS - 1 downto G_PHASE_FRACTIONAL_BITS) + 2**(G_PHASE_WIDTH - 2);
-    end generate;
     
     -- fetch data from table
     -- this includes the current data and the next data

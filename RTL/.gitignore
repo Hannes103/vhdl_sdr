@@ -1,5 +1,8 @@
 # Eclipse files
 .pydevproject
 
+# Python Cache
+*.pyc
+
 # VUnit test output
 vunit_out/**

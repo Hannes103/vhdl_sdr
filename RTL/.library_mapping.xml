@@ -21,13 +21,28 @@
   <Mappings Location="src/dsp/pid_simple.vhd" Library="src"/>
   <Mappings Location="src/dsp/shift_register.vhd" Library="src"/>
   <Mappings Location="src/dummy.vhd" Library="src"/>
+  <Mappings Location="src/rf/dds_generator.vhd" Library="src"/>
+  <Mappings Location="src/rf/dds_generator_pgk.vhd" Library="src"/>
+  <Mappings Location="src/rf/iq_demodulator.vhd" Library="src"/>
+  <Mappings Location="src/rf/iq_demodulator_pkg.vhd" Library="src"/>
+  <Mappings Location="src/rf/phase_detector.vhd" Library="src"/>
+  <Mappings Location="src/rf/radio.vhd" Library="src"/>
+  <Mappings Location="src/rf/reciever.vhd" Library="src"/>
+  <Mappings Location="src/rf/rf_reciever.vhd" Library="src"/>
   <Mappings Location="src/shift_register.vhd" Library="src"/>
   <Mappings Location="src/util/linear_feedback_shift_register.vhd" Library="src"/>
+  <Mappings Location="src/utils/generic_pkg.vhd" Library="src"/>
   <Mappings Location="tb/dsp/tb_cic_decimator.vhd" Library="src"/>
   <Mappings Location="tb/dsp/tb_cic_filter.vhd" Library="src"/>
   <Mappings Location="tb/dsp/tb_dds_generator.vhd" Library="src"/>
   <Mappings Location="tb/dsp/tb_iq_demod.vhd" Library="src"/>
   <Mappings Location="tb/dsp/tb_pid_simple.vhd" Library="src"/>
+  <Mappings Location="tb/rf/tb_dds_generator.vhd" Library="src"/>
+  <Mappings Location="tb/rf/tb_iq_demodulator.vhd" Library="src"/>
+  <Mappings Location="tb/rf/tb_phase_detector.vhd" Library="src"/>
+  <Mappings Location="tb/rf/tb_radio.vhd" Library="src"/>
+  <Mappings Location="tb/rf/tb_reciever.vhd" Library="src"/>
+  <Mappings Location="tb/rf/tb_rf_reciever.vhd" Library="src"/>
   <Mappings Location="tb/tb_demo.vhd" Library="src"/>
   <Mappings Location="tb/tb_shift_register.vhd" Library="src"/>
   <Mappings Location="tb/tb_unisim_test.vhd" Library="src"/>

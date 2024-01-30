@@ -112,6 +112,10 @@ architecture behav of cic_decimator is
     
     signal s_comb_state : unsigned(C_COMB_STATE_WIDTH - 1 downto 0) := (others => '0');
     signal s_comb_prevent_output : std_logic;
+
+    -- Signals: input capture
+    signal s_input : sfixed(G_INPUT_WIDTH - 1 downto -G_INPUT_FRACTIONAL_BITS);
+    signal s_input_valid : std_logic;
     
     -- Signals: output generation
     
@@ -150,12 +154,22 @@ begin
             if i_rst = '1' then
                 -- synchronous reset for the internal storage registers
                 s_int_delay_line <= (others => (others => '0'));
+                
+                s_input <= to_sfixed(0, s_input);
+                s_input_valid <= '0';
             else
-                -- we can only process samples if our input is valid.
+                -- always latch whether or not the input is valid
+                s_input_valid <= i_input_valid;
+                
                 if i_input_valid = '1' then
+                    s_input <= i_input;
+                end if;
+                
+                -- we can only process samples if our input is valid.
+                if s_input_valid = '1' then
                 
                     -- First stage needs to be implemented manually the other stages can be generated using for loops.
-                    s_int_delay_line(0) <= s_int_delay_line(0) + signed(to_slv(i_input));         
+                    s_int_delay_line(0) <= s_int_delay_line(0) + signed(to_slv(s_input));         
                     for i in 1 to G_ORDER - 1 loop
                         s_int_delay_line(i) <= s_int_delay_line(i) + s_int_delay_line(i - 1);
                     end loop;  
@@ -192,7 +206,7 @@ begin
                 s_comb_prevent_output <= '1';
             else
                 -- we can only continue if our input is invalid. If not, then we pause
-                if i_input_valid = '1' then
+                if s_input_valid = '1' then
                 
                     -- we want to keep the current sample
                     if s_keep_sample = '1' then
@@ -253,7 +267,7 @@ begin
                 s_output <= (others => '0');
             else
                 -- we can only continue if the input is valid, otherwise we need to pause
-                if i_input_valid = '1' then
+                if s_input_valid = '1' then
                     -- only update the output IF the prevent output flag is low
                     -- its used to indicate that the comb update state machine is active
                     --
@@ -301,7 +315,7 @@ begin
                 
             else
                 -- sample counter can only increment if the input is valid
-                if i_input_valid = '1' then
+                if s_input_valid = '1' then
                     -- if not reset then the increment the counter by one every clock cycle
                     s_resampl_counter <= s_resampl_counter + 1;
                 end if;

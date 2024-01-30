@@ -110,7 +110,7 @@ begin
                 s_input_valid <= '1';
                 WaitForClock(s_clk);
                 
-                VerifyNextSample(s_clk, s_output_valid, s_output, 0.0);
+                VerifyNextSample(s_clk, s_output_valid, s_output,     0.0);
                 VerifyNextSample(s_clk, s_output_valid, s_output,   1.717);
                 VerifyNextSample(s_clk, s_output_valid, s_output,  37.785);
                 
