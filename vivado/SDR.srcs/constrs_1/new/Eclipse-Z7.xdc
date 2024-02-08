@@ -4,8 +4,8 @@
 ## - rename the used ports (in each line, after get_ports) according to the top level signal names in the project
 
 ## 125MHz Clock from Ethernet PHY
-set_property -dict { PACKAGE_PIN D18   IOSTANDARD LVCMOS33 } [get_ports { i_clk }]; #IO_L12P_T1_MRCC Sch=sysclk
-create_clock -add -name sys_clk_pin -period 5.00 -waveform {0 4} [get_ports { i_clk }];
+#set_property -dict { PACKAGE_PIN D18   IOSTANDARD LVCMOS33 } [get_ports { sys_clock }]; #IO_L12P_T1_MRCC Sch=sysclk
+#create_clock -add -name sys_clk_pin -period 8.00 -waveform {0 4} [get_ports { sys_clock }];
 
 ## Buttons
 #set_property -dict { PACKAGE_PIN C17   IOSTANDARD LVCMOS33 } [get_ports { btn[0] }]; #IO_L11P_T1_SRCC Sch=btn[0]
@@ -107,9 +107,10 @@ create_clock -add -name sys_clk_pin -period 5.00 -waveform {0 4} [get_ports { i_
 #set_property -dict { PACKAGE_PIN V17  } [get_ports { syzygy_b_s[26] }]; #IO_L16N_T2 Sch=syzygy_b_s[26]
 #set_property -dict { PACKAGE_PIN U17  } [get_ports { syzygy_b_s[27] }]; #IO_L16P_T2 Sch=syzygy_b_s[27]
 
-## Crypto SDA 
+## Crypto SDA
 #set_property -dict { PACKAGE_PIN D22   IOSTANDARD LVCMOS33 } [get_ports { crypto_sda }]; #IO_L16P_T2 Sch=crypto_sda
 
 ## Miscellaneous
 #set_property -dict { PACKAGE_PIN B22   IOSTANDARD LVCMOS33 } [get_ports { mcu_rsvd[0] }]; #IO_L18N_T2_AD13N Sch=mcu_rsvd[1]
 #set_property -dict { PACKAGE_PIN B21   IOSTANDARD LVCMOS33 } [get_ports { mcu_rsvd[1] }]; #IO_L18P_T2_AD13P Sch=mcu_rsvd[2]
+

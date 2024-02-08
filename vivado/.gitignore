@@ -42,58 +42,9 @@
 
 .jobs
 
-### project synth
-*/*.runs/synth*/*.xml
-*/*.runs/synth*/*.txt
-*/*.runs/synth*/*.sh
-*/*.runs/synth*/*.tcl
-*/*.runs/synth*/*.bat
-*/*.runs/synth*/*.xdc
-!*/*.runs/synth*/*utilization*.rpt
-
-*.runs/synth*/*.xml
-*.runs/synth*/*.txt
-*.runs/synth*/*.sh
-*.runs/synth*/*.tcl
-*.runs/synth*/*.bat
-*.runs/synth*/*.xdc
-!*.runs/synth*/*utilization*.rpt
-
-### project impl
-*/*.runs/impl*/*.xml
-*/*.runs/impl*/*.html
-*/*.runs/impl*/*.txt
-*/*.runs/impl*/*.sh
-*/*.runs/impl*/*.tcl
-*/*.runs/impl*/*.bat
-!*/*.runs/impl*/*utilization*.rpt
-
-*.runs/impl*/*.xml
-*.runs/impl*/*.html
-*.runs/impl*/*.txt
-*.runs/impl*/*.sh
-*.runs/impl*/*.tcl
-*.runs/impl*/*.bat
-!*.runs/impl*/*utilization*.rpt
-
-### block design
-*/*/bd/*/hdl
-*/*/*/bd/*/hdl
-
-*/*/bd/*/*.xdc
-*/*/*/bd/*/*.xdc
-
-*/*/bd/*/ip/*/*.xdc
-*/*/*/bd/*/ip/*/*.xdc
-
-*/*/bd/*/ip/*/*/
-*/*/*/bd/*/ip/*/*/
-
-*/*/bd/*/ip/*/*.vhd
-*/*/*/bd/*/ip/*/*.vhd
-
-*/*/bd/*/ip/*/*.xml
-*/*/*/bd/*/ip/*/*.xml
+### project synth and other generated files
+*.runs/
+*.gen/
 
 *.c
 *.h

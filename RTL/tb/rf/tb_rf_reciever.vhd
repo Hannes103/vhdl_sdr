@@ -25,7 +25,7 @@ entity tb_rf_reciever is
 end entity tb_rf_reciever;
 
 architecture tb of tb_rf_reciever is
-    signal input_bus : axi_stream_master_t := new_axi_stream_master(16);
+    signal input_bus : axi_stream_master_t := new_axi_stream_master(16); 
     signal output_bus : axi_stream_slave_t := new_axi_stream_slave(32);
     
     constant C_DATA_WIDTH      : integer                     := 16;
@@ -57,28 +57,17 @@ architecture tb of tb_rf_reciever is
     signal s_cfg_phase_detector_coef_B : sfixed(C_PHASE_DETECTOR_COEF_WIDTH - 1 downto -C_PHASE_DETECTOR_COEF_FRACTIONAL_BITS);
     signal s_cfg_phase_detector_coef_C : sfixed(C_PHASE_DETECTOR_COEF_WIDTH - 1 downto -C_PHASE_DETECTOR_COEF_FRACTIONAL_BITS);
     
-    signal s_enable_output : std_logic;
+    signal s_StartInputOutput : std_logic := '0';
+    signal s_InputDone : std_logic := '0';
+    signal s_TestDone : std_logic := '0';
 
 begin
     
     CreateClock(s_clk, 10 ns);
     
-    proc_read_stimuli : process is
+    proc_test : process is
         -- Variables: used for TEXTIO input
-        
-        file     finput : text;
-        variable fstatus : file_open_status;
-        variable input  : line;
-        
-        -- Variables: used to read from the line
-        
-        variable data   : integer;
-        
-        -- Constants
-
-        constant C_FILE_NAME :  string := output_path & "/input.txt";        
-        
-        constant K  : real :=  2.50;
+        constant K  : real :=  4.50;
         constant Tn : real := 20.50;
     begin
         test_runner_setup(runner, runner_cfg);
@@ -91,8 +80,9 @@ begin
             WaitForClock(s_clk, 1);
             s_rst <= '0';
 
-            if run("import_export_data") then
+            if run("data_with_tracking") then
                 
+                -- Set configuration parameters:
                 s_cfg_nco_frequency <= to_sfixed(to_phase_increment(C_NCO_PHASE_WIDTH, C_NCO_PHASE_FRACTIONAL_BITS, 100.0e6, real'value(target_freq)), C_NCO_PHASE_WIDTH - 1 , -C_NCO_PHASE_FRACTIONAL_BITS);
                 s_cfg_phase_detector_enable <= '1';
                 s_cfg_phase_detector_mode <= '1';
@@ -100,40 +90,55 @@ begin
                 s_cfg_phase_detector_coef_B <= to_sfixed( K*(1.0/Tn)             , s_cfg_phase_detector_coef_B); -- B = K*(Ta/Tn - (4*Tv)/Ta)
                 s_cfg_phase_detector_coef_C <= to_sfixed( K*(1.0/(2.0*Tn) - 1.0) , s_cfg_phase_detector_coef_C); -- C = K*(Ta/(2*Tn) + (2*Tv)/Ta - 1)
                 
+                Toggle(s_StartInputOutput);  
                 
-                -- open output file for reading
-                file_open(fstatus, finput, C_FILE_NAME, read_mode);
-                if fstatus /= OPEN_OK then
-                    report "File " & C_FILE_NAME & " cannot be opened for reading!" severity error;    
-                end if;
-                
-                -- this signal is used to communicate with the writing process that 
-                -- outputs the sample data
-                s_enable_output <= '1';
-                
-                while not endfile(finput) loop
-                    
-                    -- read input from file
-                    readline(finput, input);
-                    if input.all'length = 0 or input.all(1) = '#' then
-                        next;
-                    end if;
-                    
-                    -- read data from file
-                    read(input, data);
-                    
-                    push_axi_stream(net, input_bus, std_logic_vector(to_signed(data, 16)));
-                    WaitForClock(s_clk, s_input_ready);
-                    
-                end loop;   
-
-                
-                s_enable_output <= '0';             
+                WaitForBarrier(s_TestDone);          
             end if;              
         end loop;
         
         test_runner_cleanup(runner);  
-    end process proc_read_stimuli;
+    end process proc_test;
+    
+    proc_read_input : process is
+        file     finput : text;
+        variable fstatus : file_open_status;
+        variable input  : line;
+        
+        -- Variables: used to read from the line
+        
+        variable data   : integer;
+        
+        -- Constants
+
+        constant C_FILE_NAME :  string := output_path & "/input.txt";     
+    begin 
+        WaitForToggle(s_StartInputOutput);
+        
+        -- open output file for reading
+        file_open(fstatus, finput, C_FILE_NAME, read_mode);
+        if fstatus /= OPEN_OK then
+            report "File " & C_FILE_NAME & " cannot be opened for reading!" severity error;    
+        end if;
+        
+        while not endfile(finput) loop
+            
+            -- read input from file
+            readline(finput, input);
+            if input.all'length = 0 or input.all(1) = '#' then
+                next;
+            end if;
+            
+            -- read data from file
+            read(input, data);
+            
+            push_axi_stream(net, input_bus, std_logic_vector(to_signed(data, 16)));
+            WaitForClock(s_clk, s_input_ready);
+            
+        end loop;   
+        
+        Toggle(s_InputDone);
+        WaitForBarrier(s_TestDone);
+    end process proc_read_input;
     
     proc_write_output : process is
         file     foutput : text;
@@ -146,9 +151,7 @@ begin
         -- output file name
         constant C_FILE_NAME :  string := output_path & "/baseband.txt";
     begin
-        
-        -- this process is only active once output writing is enabled
-        wait until s_enable_output = '1';
+        WaitForToggle(s_StartInputOutput);
         
         -- open file that contains the resulting baseband signal
         file_open(fstatus, foutput, C_FILE_NAME, write_mode);
@@ -157,7 +160,7 @@ begin
         end if;
         
         -- write inphase and quadrature samples to file while output is enabled
-        while s_enable_output = '1' loop
+        while s_InputDone = '0' loop
             
             pop_axi_stream(net, output_bus, data, last);
             
@@ -168,6 +171,7 @@ begin
             
         end loop;
         
+        WaitForBarrier(s_TestDone);
     end process proc_write_output;
     
     test_runner_watchdog(runner, 10 ms);

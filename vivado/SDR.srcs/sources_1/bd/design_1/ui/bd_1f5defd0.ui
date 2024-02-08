@@ -1,0 +1,82 @@
+{
+   "ActiveEmotionalView":"Default View",
+   "Default View_ScaleFactor":"1.16629",
+   "Default View_TopLeft":"-9,-406",
+   "ExpandedHierarchyInLayout":"",
+   "guistr":"# # String gsaved with Nlview 7.5.8 2022-09-21 7111 VDI=41 GEI=38 GUI=JA:10.0 threadsafe
+#  -string -flagsOSRD
+preplace port DDR -pg 1 -lvl 6 -x 1670 -y -270 -defaultsOSRD
+preplace port FIXED_IO -pg 1 -lvl 6 -x 1670 -y -250 -defaultsOSRD
+preplace port port-id_sZmodRelayComL_0 -pg 1 -lvl 6 -x 1670 -y 610 -defaultsOSRD
+preplace port port-id_sZmodRelayComH_0 -pg 1 -lvl 6 -x 1670 -y 590 -defaultsOSRD
+preplace port port-id_sZmodCh2GainL_0 -pg 1 -lvl 6 -x 1670 -y 570 -defaultsOSRD
+preplace port port-id_sZmodCh2GainH_0 -pg 1 -lvl 6 -x 1670 -y 550 -defaultsOSRD
+preplace port port-id_sZmodCh1GainL_0 -pg 1 -lvl 6 -x 1670 -y 530 -defaultsOSRD
+preplace port port-id_sZmodCh1GainH_0 -pg 1 -lvl 6 -x 1670 -y 510 -defaultsOSRD
+preplace port port-id_sZmodCh2CouplingL_0 -pg 1 -lvl 6 -x 1670 -y 490 -defaultsOSRD
+preplace port port-id_sZmodCh2CouplingH_0 -pg 1 -lvl 6 -x 1670 -y 470 -defaultsOSRD
+preplace port port-id_sZmodCh1CouplingL_0 -pg 1 -lvl 6 -x 1670 -y 450 -defaultsOSRD
+preplace port port-id_sZmodCh1CouplingH_0 -pg 1 -lvl 6 -x 1670 -y 430 -defaultsOSRD
+preplace port port-id_sZmodADC_Sclk_0 -pg 1 -lvl 6 -x 1670 -y 410 -defaultsOSRD
+preplace port port-id_sZmodADC_CS_0 -pg 1 -lvl 6 -x 1670 -y 390 -defaultsOSRD
+preplace port port-id_sZmodADC_SDIO_0 -pg 1 -lvl 6 -x 1670 -y 370 -defaultsOSRD
+preplace port port-id_iZmodSync_0 -pg 1 -lvl 6 -x 1670 -y 350 -defaultsOSRD
+preplace port port-id_ZmodAdcClkIn_n_0 -pg 1 -lvl 6 -x 1670 -y 330 -defaultsOSRD
+preplace port port-id_ZmodAdcClkIn_p_0 -pg 1 -lvl 6 -x 1670 -y 310 -defaultsOSRD
+preplace port port-id_ZmodDcoClk_0 -pg 1 -lvl 0 -x -20 -y 450 -defaultsOSRD
+preplace port port-id_sys_clock -pg 1 -lvl 0 -x -20 -y 380 -defaultsOSRD
+preplace portBus dZmodADC_Data_0 -pg 1 -lvl 0 -x -20 -y 470 -defaultsOSRD
+preplace inst ZmodScopeController_0 -pg 1 -lvl 5 -x 1460 -y 400 -defaultsOSRD
+preplace inst processing_system7_0 -pg 1 -lvl 5 -x 1460 -y -230 -defaultsOSRD
+preplace inst clk_wiz_0 -pg 1 -lvl 4 -x 1160 -y 370 -defaultsOSRD
+preplace inst xlconstant_1 -pg 1 -lvl 4 -x 1160 -y 540 -defaultsOSRD
+preplace inst xlconstant_2 -pg 1 -lvl 4 -x 1160 -y 640 -defaultsOSRD
+preplace inst xlconstant_0 -pg 1 -lvl 1 -x 80 -y -230 -defaultsOSRD
+preplace inst xlconstant_3 -pg 1 -lvl 1 -x 80 -y -110 -defaultsOSRD
+preplace inst xlconstant_4 -pg 1 -lvl 1 -x 80 -y -10 -defaultsOSRD
+preplace inst xlconstant_5 -pg 1 -lvl 1 -x 80 -y 90 -defaultsOSRD
+preplace inst xlconstant_6 -pg 1 -lvl 1 -x 80 -y 190 -defaultsOSRD
+preplace inst system_ila_0 -pg 1 -lvl 3 -x 790 -y -110 -defaultsOSRD -resize 131 146
+preplace inst axis_subset_converter_0 -pg 1 -lvl 5 -x 1460 -y 30 -defaultsOSRD -orient R180
+preplace inst rf_reciever_wrapper_0 -pg 1 -lvl 2 -x 430 -y -130 -defaultsOSRD
+preplace netloc Net2 1 5 1 N 370
+preplace netloc ZmodDcoClk_0_1 1 0 5 NJ 450 N 450 N 450 N 450 N
+preplace netloc ZmodScopeController_0_ZmodAdcClkIn_n 1 5 1 N 330
+preplace netloc ZmodScopeController_0_ZmodAdcClkIn_p 1 5 1 N 310
+preplace netloc ZmodScopeController_0_iZmodSync 1 5 1 N 350
+preplace netloc ZmodScopeController_0_sZmodADC_CS 1 5 1 N 390
+preplace netloc ZmodScopeController_0_sZmodADC_Sclk 1 5 1 N 410
+preplace netloc ZmodScopeController_0_sZmodCh1CouplingH 1 5 1 N 430
+preplace netloc ZmodScopeController_0_sZmodCh1CouplingL 1 5 1 N 450
+preplace netloc ZmodScopeController_0_sZmodCh1GainH 1 5 1 N 510
+preplace netloc ZmodScopeController_0_sZmodCh1GainL 1 5 1 N 530
+preplace netloc ZmodScopeController_0_sZmodCh2CouplingH 1 5 1 N 470
+preplace netloc ZmodScopeController_0_sZmodCh2CouplingL 1 5 1 N 490
+preplace netloc ZmodScopeController_0_sZmodCh2GainH 1 5 1 N 550
+preplace netloc ZmodScopeController_0_sZmodCh2GainL 1 5 1 N 570
+preplace netloc ZmodScopeController_0_sZmodRelayComH 1 5 1 N 590
+preplace netloc ZmodScopeController_0_sZmodRelayComL 1 5 1 N 610
+preplace netloc clk_wiz_0_adc_clk_200 1 4 1 N 370
+preplace netloc clk_wiz_0_locked 1 1 5 200 40 700 40 N 40 1290 110 1650
+preplace netloc clk_wiz_0_sys_clk_100 1 1 5 190 50 690 50 N 50 1280 120 1640
+preplace netloc dZmodADC_Data_0_1 1 0 5 NJ 470 N 470 N 470 N 470 N
+preplace netloc xlconstant_1_dout 1 4 1 1260 410n
+preplace netloc xlconstant_2_dout 1 4 1 1270 430n
+preplace netloc xlconstant_0_dout 1 1 1 160 -230n
+preplace netloc xlconstant_3_dout 1 1 1 160 -130n
+preplace netloc xlconstant_4_dout 1 1 1 160 -90n
+preplace netloc xlconstant_5_dout 1 1 1 170 -70n
+preplace netloc xlconstant_6_dout 1 1 1 180 -50n
+preplace netloc sys_clock 1 0 4 NJ 380 NJ 380 NJ 380 N
+preplace netloc processing_system7_0_DDR 1 5 1 NJ -270
+preplace netloc processing_system7_0_FIXED_IO 1 5 1 NJ -250
+preplace netloc ZmodScopeController_0_DataStream 1 5 1 1630 50n
+preplace netloc axis_subset_converter_0_M_AXIS 1 1 4 210 30 NJ 30 NJ 30 N
+preplace netloc rf_reciever_wrapper_0_M00_AXIS_OUTPUT 1 2 1 N -140
+levelinfo -pg 1 -20 80 430 790 1160 1460 1670
+pagesize -pg 1 -db -bbox -sgen -240 -480 2640 800
+"
+}
+{
+   "da_ps7_cnt":"1"
+}

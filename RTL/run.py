@@ -85,9 +85,10 @@ for freq in [20.00]:
     freq_error = -1000; # frequency error in ppm
     config = {
         "samples": 20e3,                            # number of samples
-        "freq": freq * 1e6 * (1 + freq_error/1e6), # frequency in Hz
-        "ampl": 0.2,                               # maximum amplitude in percent
-        "SNR": 3,                                  # signal to noise ratio in dB
+        "freq": freq * 1e6 * (1 + freq_error/1e6),  # frequency in Hz
+        "ampl": 0.2,                                # maximum amplitude in percent,
+        "offset": 0.1,                              # dc offset
+        "SNR": 20,                                  # signal to noise ratio in dB
         "data": [1 + 1j, -1 + 1j, -1 - 1j, +1 - 1j] # data to send
     }
     

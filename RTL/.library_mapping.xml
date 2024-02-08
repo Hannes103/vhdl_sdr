@@ -31,7 +31,12 @@
   <Mappings Location="src/rf/rf_reciever.vhd" Library="src"/>
   <Mappings Location="src/shift_register.vhd" Library="src"/>
   <Mappings Location="src/util/linear_feedback_shift_register.vhd" Library="src"/>
+  <Mappings Location="src/utils/axi_stream_splitter.vhd" Library="src"/>
   <Mappings Location="src/utils/generic_pkg.vhd" Library="src"/>
+  <Mappings Location="src/vivado/rf_reciever_wrapper.vhd" Library="src"/>
+  <Mappings Location="src/vivado/rf_reciever_wrapper_2000.vhd" Library="src"/>
+  <Mappings Location="src/vivado/rf_reciever_wrapper_2008.vhd" Library="src"/>
+  <Mappings Location="src/vivado/xilinx_pkg.vhd" Library="src"/>
   <Mappings Location="tb/dsp/tb_cic_decimator.vhd" Library="src"/>
   <Mappings Location="tb/dsp/tb_cic_filter.vhd" Library="src"/>
   <Mappings Location="tb/dsp/tb_dds_generator.vhd" Library="src"/>

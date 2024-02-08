@@ -33,7 +33,7 @@ class iq_checker:
         
         noise = np.random.normal(0,SNR,len(t))
         
-        result_with_noise = np.clip( (result + noise) * self.config["ampl"], -1, 1)
+        result_with_noise = np.clip( self.config["offset"] + (result + noise) * self.config["ampl"], -1, 1)
         return result_with_noise
     
     def pre_config(self, output_path : str) -> bool:     
