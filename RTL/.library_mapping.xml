@@ -21,6 +21,7 @@
   <Mappings Location="src/dsp/pid_simple.vhd" Library="src"/>
   <Mappings Location="src/dsp/shift_register.vhd" Library="src"/>
   <Mappings Location="src/dummy.vhd" Library="src"/>
+  <Mappings Location="src/register_banks/rf_reciver_register_bank.vhd" Library="src"/>
   <Mappings Location="src/rf/dds_generator.vhd" Library="src"/>
   <Mappings Location="src/rf/dds_generator_pgk.vhd" Library="src"/>
   <Mappings Location="src/rf/iq_demodulator.vhd" Library="src"/>

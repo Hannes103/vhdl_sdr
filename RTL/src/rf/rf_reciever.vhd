@@ -28,11 +28,22 @@ entity rf_reciever is
     );
     
     port(
+        -- Synchronous input clock.
         i_clk : in std_logic;
+        
+        -- Sychrnonous active high reset signal.
         i_rst : in std_logic;
         
+        -- TDATA of AXI-Stream input for raw ADC samples that should be proceessed.
+        --
+        -- Input will be mixed with the internally generated carriers signals to produce the I/Q outputs.
+        -- See: iq_demodulator.vhd for more information.
         i_input : in signed(G_DATA_WIDTH - 1 downto 0);
+        
+        -- TVALID of AXI-Stream input for raw ADC samples.
         i_input_valid : in std_logic;
+        
+        -- TREADY of AXI-Stram input for raw ADC samples.
         o_input_ready : out std_logic;
         
         o_output_0_i : out sfixed(G_DATA_WIDTH - 1 downto 0);
@@ -45,6 +56,9 @@ entity rf_reciever is
         o_output_1_valid : out std_logic ;
         i_output_1_ready : in std_logic := '0';
         
+        -- Frequency setpoint for internal NCO.
+        --
+        -- TODO
         i_cfg_nco_frequency : in sfixed(G_NCO_PHASE_WIDTH - 1 downto -G_NCO_PHASE_FRACTIONAL_BITS);
         
         i_cfg_phase_detector_enable : in std_logic;
