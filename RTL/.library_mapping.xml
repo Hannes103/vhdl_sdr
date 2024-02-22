@@ -21,6 +21,10 @@
   <Mappings Location="src/dsp/pid_simple.vhd" Library="src"/>
   <Mappings Location="src/dsp/shift_register.vhd" Library="src"/>
   <Mappings Location="src/dummy.vhd" Library="src"/>
+  <Mappings Location="src/register_banks/adc_register_bank.vhd" Library="src"/>
+  <Mappings Location="src/register_banks/dummy_register_bank.vhd" Library="src"/>
+  <Mappings Location="src/register_banks/generic_register_bank.vhd" Library="src"/>
+  <Mappings Location="src/register_banks/rf_reciever_register_bank.vhd" Library="src"/>
   <Mappings Location="src/register_banks/rf_reciver_register_bank.vhd" Library="src"/>
   <Mappings Location="src/rf/dds_generator.vhd" Library="src"/>
   <Mappings Location="src/rf/dds_generator_pgk.vhd" Library="src"/>
@@ -34,6 +38,7 @@
   <Mappings Location="src/util/linear_feedback_shift_register.vhd" Library="src"/>
   <Mappings Location="src/utils/axi_stream_splitter.vhd" Library="src"/>
   <Mappings Location="src/utils/generic_pkg.vhd" Library="src"/>
+  <Mappings Location="src/vivado/adc_register_bank_wrapper_2000.vhd" Library="src"/>
   <Mappings Location="src/vivado/rf_reciever_wrapper.vhd" Library="src"/>
   <Mappings Location="src/vivado/rf_reciever_wrapper_2000.vhd" Library="src"/>
   <Mappings Location="src/vivado/rf_reciever_wrapper_2008.vhd" Library="src"/>
@@ -43,6 +48,8 @@
   <Mappings Location="tb/dsp/tb_dds_generator.vhd" Library="src"/>
   <Mappings Location="tb/dsp/tb_iq_demod.vhd" Library="src"/>
   <Mappings Location="tb/dsp/tb_pid_simple.vhd" Library="src"/>
+  <Mappings Location="tb/register_banks/tb_adc_register_bank.vhd" Library="src"/>
+  <Mappings Location="tb/register_banks/tb_generic_register_bank.vhd" Library="src"/>
   <Mappings Location="tb/rf/tb_dds_generator.vhd" Library="src"/>
   <Mappings Location="tb/rf/tb_iq_demodulator.vhd" Library="src"/>
   <Mappings Location="tb/rf/tb_phase_detector.vhd" Library="src"/>

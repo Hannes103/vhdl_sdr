@@ -29,11 +29,15 @@ architecture tb of tb_rf_reciever is
     signal output_bus : axi_stream_slave_t := new_axi_stream_slave(32);
     
     constant C_DATA_WIDTH      : integer                     := 16;
+    
     constant C_ROUNDING_MODE   : fixed_round_style_type      := FIXED_TRUNCATE;
+    
     constant C_NCO_PHASE_WIDTH : integer                     := 10;
     constant C_NCO_PHASE_FRACTIONAL_BITS : integer           := 11;
-    constant C_CIC_ORDER : integer                           := 4;
-    constant C_CIC_DECIMATION : integer                      := 8;
+    
+    constant C_CIC_ORDER : integer                           := 8;
+    constant C_CIC_DECIMATION : integer                      := 32;
+    
     constant C_PHASE_DETECTOR_COEF_WIDTH : integer           := 8;
     constant C_PHASE_DETECTOR_COEF_FRACTIONAL_BITS : integer := 10;
     
@@ -56,6 +60,9 @@ architecture tb of tb_rf_reciever is
     signal s_cfg_phase_detector_coef_A : sfixed(C_PHASE_DETECTOR_COEF_WIDTH - 1 downto -C_PHASE_DETECTOR_COEF_FRACTIONAL_BITS);
     signal s_cfg_phase_detector_coef_B : sfixed(C_PHASE_DETECTOR_COEF_WIDTH - 1 downto -C_PHASE_DETECTOR_COEF_FRACTIONAL_BITS);
     signal s_cfg_phase_detector_coef_C : sfixed(C_PHASE_DETECTOR_COEF_WIDTH - 1 downto -C_PHASE_DETECTOR_COEF_FRACTIONAL_BITS);
+    signal s_cfg_phase_detector_threshold : sfixed(C_DATA_WIDTH - 1 downto 0);
+    
+    signal s_mon_phase_detector_nco_adj : sfixed(C_NCO_PHASE_WIDTH - 1 downto -C_NCO_PHASE_FRACTIONAL_BITS);
     
     signal s_StartInputOutput : std_logic := '0';
     signal s_InputDone : std_logic := '0';
@@ -66,14 +73,13 @@ begin
     CreateClock(s_clk, 10 ns);
     
     proc_test : process is
-        -- Variables: used for TEXTIO input
-        constant K  : real :=  4.50;
-        constant Tn : real := 20.50;
+        constant K  : real :=  2.0;
+        constant Tn : real :=  85.0;
     begin
         test_runner_setup(runner, runner_cfg);
         
         while test_suite loop
-            set_timeout(runner, 100 ms);
+            set_timeout(runner, 2 ms);
 
             -- reset peripheral
             s_rst <= '1';
@@ -86,9 +92,11 @@ begin
                 s_cfg_nco_frequency <= to_sfixed(to_phase_increment(C_NCO_PHASE_WIDTH, C_NCO_PHASE_FRACTIONAL_BITS, 100.0e6, real'value(target_freq)), C_NCO_PHASE_WIDTH - 1 , -C_NCO_PHASE_FRACTIONAL_BITS);
                 s_cfg_phase_detector_enable <= '1';
                 s_cfg_phase_detector_mode <= '1';
-                s_cfg_phase_detector_coef_A <= to_sfixed( K*(1.0 - 1.0/(2.0*Tn)) , s_cfg_phase_detector_coef_A); -- A = K*(1 + Ta/(2*Tn) + (2*Tv)/Ta)
+                s_cfg_phase_detector_coef_A <= to_sfixed( K*(1.0 + 1.0/(2.0*Tn)) , s_cfg_phase_detector_coef_A); -- A = K*(1 + Ta/(2*Tn) + (2*Tv)/Ta)
                 s_cfg_phase_detector_coef_B <= to_sfixed( K*(1.0/Tn)             , s_cfg_phase_detector_coef_B); -- B = K*(Ta/Tn - (4*Tv)/Ta)
                 s_cfg_phase_detector_coef_C <= to_sfixed( K*(1.0/(2.0*Tn) - 1.0) , s_cfg_phase_detector_coef_C); -- C = K*(Ta/(2*Tn) + (2*Tv)/Ta - 1)
+                
+                s_cfg_phase_detector_threshold <= to_sfixed(2000, s_cfg_phase_detector_threshold);
                 
                 Toggle(s_StartInputOutput);  
                 
@@ -166,15 +174,14 @@ begin
             
             write(output, to_integer( signed( data(15 downto  0) ) ), RIGHT, 8);
             write(output, to_integer( signed( data(31 downto 16) ) ), RIGHT,16);
+            write(output, to_real( s_mon_phase_detector_nco_adj - s_cfg_nco_frequency), RIGHT,24);
             
             writeline(foutput, output);
             
         end loop;
-        
-        WaitForBarrier(s_TestDone);
     end process proc_write_output;
     
-    test_runner_watchdog(runner, 10 ms);
+    test_runner_watchdog(runner, 10 us);
     
     inst_input_master : entity vunit_lib.axi_stream_master
         generic map(
@@ -239,7 +246,9 @@ begin
             i_cfg_phase_detector_mode   => s_cfg_phase_detector_mode,
             i_cfg_phase_detector_coef_A => s_cfg_phase_detector_coef_A,
             i_cfg_phase_detector_coef_B => s_cfg_phase_detector_coef_B,
-            i_cfg_phase_detector_coef_C => s_cfg_phase_detector_coef_C
+            i_cfg_phase_detector_coef_C => s_cfg_phase_detector_coef_C,
+            i_cfg_phase_detector_threshold => s_cfg_phase_detector_threshold,
+            o_mon_phase_detector_nco_adj => s_mon_phase_detector_nco_adj
         );
     
     

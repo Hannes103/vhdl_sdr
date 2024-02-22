@@ -2,7 +2,7 @@
   "schema": "xilinx.com:schema:json_instance:1.0",
   "ip_inst": {
     "xci_name": "design_1_ZmodScopeController_0_0",
-    "cell_name": "ZmodScopeController_0",
+    "cell_name": "ADC/ZmodScopeController_0",
     "component_reference": "digilent.com:user:ZmodScopeController:1.2",
     "ip_revision": "4",
     "gen_directory": "../../../../../../SDR.gen/sources_1/bd/design_1/ip/design_1_ZmodScopeController_0_0",
@@ -11,8 +11,8 @@
         "kSamplingPeriod": [ { "value": "10000", "resolve_type": "user", "format": "long", "usage": "all" } ],
         "kADC_ClkDiv": [ { "value": "2", "value_src": "user", "resolve_type": "user", "format": "long", "usage": "all" } ],
         "kADC_Width": [ { "value": "14", "resolve_type": "user", "format": "long", "enabled": false, "usage": "all" } ],
-        "kExtRelayConfigEn": [ { "value": "false", "value_src": "user", "resolve_type": "user", "format": "bool", "usage": "all" } ],
-        "kExtCalibEn": [ { "value": "false", "value_src": "user", "resolve_type": "user", "format": "bool", "usage": "all" } ],
+        "kExtRelayConfigEn": [ { "value": "true", "value_src": "user", "resolve_type": "user", "format": "bool", "usage": "all" } ],
+        "kExtCalibEn": [ { "value": "true", "value_src": "user", "resolve_type": "user", "format": "bool", "usage": "all" } ],
         "kExtCmdInterfaceEn": [ { "value": "false", "resolve_type": "user", "format": "bool", "usage": "all" } ],
         "kExtSyncEn": [ { "value": "false", "value_src": "user", "resolve_type": "user", "format": "bool", "usage": "all" } ],
         "kCh1CouplingStatic": [ { "value": "\"1\"", "value_src": "user", "resolve_type": "user", "format": "bitString", "usage": "all" } ],
@@ -35,8 +35,8 @@
         "kSamplingPeriod": [ { "value": "10000", "resolve_type": "generated", "format": "long", "usage": "all" } ],
         "kADC_ClkDiv": [ { "value": "2", "resolve_type": "generated", "format": "long", "usage": "all" } ],
         "kADC_Width": [ { "value": "14", "resolve_type": "generated", "format": "long", "enabled": false, "usage": "all" } ],
-        "kExtRelayConfigEn": [ { "value": "false", "resolve_type": "generated", "format": "bool", "usage": "all" } ],
-        "kExtCalibEn": [ { "value": "false", "resolve_type": "generated", "format": "bool", "usage": "all" } ],
+        "kExtRelayConfigEn": [ { "value": "true", "resolve_type": "generated", "format": "bool", "usage": "all" } ],
+        "kExtCalibEn": [ { "value": "true", "resolve_type": "generated", "format": "bool", "usage": "all" } ],
         "kExtCmdInterfaceEn": [ { "value": "false", "resolve_type": "generated", "format": "bool", "usage": "all" } ],
         "kExtSyncEn": [ { "value": "false", "resolve_type": "generated", "format": "bool", "usage": "all" } ],
         "kCh1CouplingStatic": [ { "value": "\"1\"", "resolve_type": "generated", "format": "bitString", "usage": "all" } ],
@@ -93,6 +93,18 @@
         "cDataAxisTvalid": [ { "direction": "out" } ],
         "cDataAxisTready": [ { "direction": "in" } ],
         "cDataAxisTdata": [ { "direction": "out", "size_left": "31", "size_right": "0" } ],
+        "cExtCh1LgMultCoef": [ { "direction": "in", "size_left": "17", "size_right": "0", "driver_value": "0" } ],
+        "cExtCh1LgAddCoef": [ { "direction": "in", "size_left": "17", "size_right": "0", "driver_value": "0" } ],
+        "cExtCh1HgMultCoef": [ { "direction": "in", "size_left": "17", "size_right": "0", "driver_value": "0" } ],
+        "cExtCh1HgAddCoef": [ { "direction": "in", "size_left": "17", "size_right": "0", "driver_value": "0" } ],
+        "cExtCh2LgMultCoef": [ { "direction": "in", "size_left": "17", "size_right": "0", "driver_value": "0" } ],
+        "cExtCh2LgAddCoef": [ { "direction": "in", "size_left": "17", "size_right": "0", "driver_value": "0" } ],
+        "cExtCh2HgMultCoef": [ { "direction": "in", "size_left": "17", "size_right": "0", "driver_value": "0" } ],
+        "cExtCh2HgAddCoef": [ { "direction": "in", "size_left": "17", "size_right": "0", "driver_value": "0" } ],
+        "sCh1CouplingConfig": [ { "direction": "in", "driver_value": "0x0" } ],
+        "sCh2CouplingConfig": [ { "direction": "in", "driver_value": "0x0" } ],
+        "sCh1GainConfig": [ { "direction": "in", "driver_value": "0x0" } ],
+        "sCh2GainConfig": [ { "direction": "in", "driver_value": "0x0" } ],
         "sTestMode": [ { "direction": "in" } ],
         "ZmodAdcClkIn_p": [ { "direction": "out" } ],
         "ZmodAdcClkIn_n": [ { "direction": "out" } ],
@@ -178,6 +190,32 @@
           },
           "port_maps": {
             "RST": [ { "physical_name": "aRst_n" } ]
+          }
+        },
+        "ExtCh1Calib": {
+          "vlnv": "natinst.com:user:ZmodScope_Calibration:1.0",
+          "abstraction_type": "natinst.com:user:ZmodScope_Calibration_rtl:1.0",
+          "mode": "slave",
+          "port_maps": {
+            "HgCoefMult": [ { "physical_name": "cExtCh1HgMultCoef" } ],
+            "LgCoefMult": [ { "physical_name": "cExtCh1LgMultCoef" } ],
+            "LgCoefAdd": [ { "physical_name": "cExtCh1LgAddCoef" } ],
+            "HgCoefAdd": [ { "physical_name": "cExtCh1HgAddCoef" } ]
+          }
+        },
+        "ExtCh2Calib": {
+          "vlnv": "natinst.com:user:ZmodScope_Calibration:1.0",
+          "abstraction_type": "natinst.com:user:ZmodScope_Calibration_rtl:1.0",
+          "mode": "slave",
+          "parameters": {
+            "NUM_READ_OUTSTANDING": [ { "value": "", "value_src": "constant", "value_permission": "bd_and_user", "usage": "all" } ],
+            "NUM_WRITE_OUTSTANDING": [ { "value": "", "value_src": "constant", "value_permission": "bd_and_user", "usage": "all" } ]
+          },
+          "port_maps": {
+            "HgCoefMult": [ { "physical_name": "cExtCh2HgMultCoef" } ],
+            "LgCoefMult": [ { "physical_name": "cExtCh2LgMultCoef" } ],
+            "LgCoefAdd": [ { "physical_name": "cExtCh2LgAddCoef" } ],
+            "HgCoefAdd": [ { "physical_name": "cExtCh2HgAddCoef" } ]
           }
         },
         "DataStream": {

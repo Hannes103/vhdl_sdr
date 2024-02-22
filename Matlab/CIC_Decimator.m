@@ -1,11 +1,11 @@
 % order of CIC filter
 ORDER = 8;
 % decimation factor
-DECIMATION = 8;
-FIR_DECIMATION = 4;
+DECIMATION = 32;
+FIR_DECIMATION = 16;
 % number of bits in the input
-INPUT_WIDTH = 8;
-INPUT_FRACTION_BITS = 3;
+INPUT_WIDTH = 16;
+INPUT_FRACTION_BITS = 0;
 
 LENGTH = 5*DECIMATION;
 
@@ -40,11 +40,20 @@ ylim([-128, 127]);
 grid minor;
 
 % cic compensation filter
-cic_comp_design = fdesign.ciccomp(1, ORDER, DECIMATION, 'n,fp,fst', 63, 1/FIR_DECIMATION, 1.5/FIR_DECIMATION);
+cic_comp_design = fdesign.ciccomp(1, ORDER, DECIMATION, 'n,fp,fst', 127, 1/FIR_DECIMATION, 1.5/FIR_DECIMATION);
 fir_comp = design(cic_comp_design, 'SystemObject', true);
 
-fv = fvtool(cascade(cic,1/gain(cic)),cascade(cic,1/gain(cic), fir_comp));
+fir_obj = dfilt.dffir(fir_comp.Numerator);
+fir_obj.Arithmetic = 'fixed';
+fir_obj.CoeffWordLength = 24; 
+fir_obj.CoeffAutoScale = true;
+fir_obj.InputWordLength = 16;
+fir_obj.InputFracLength = 0;
+
+fv = fvtool(cascade(cic,1/gain(cic)), cascade(cic,1/gain(cic), sysobj(fir_obj)));
 fv.ShowReference = 'off';
 fv.NormalizedFrequency = 'off';
 fv.Fs = 100e6;
 legend(fv, "CIC", "CIC + FIR");
+
+

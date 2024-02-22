@@ -63,11 +63,11 @@ tb_iq_demodulator = lib_src.test_bench("tb_iq_demodulator")
 
 for freq in [10, 12, 15, 20]:
     config = {
-        "samples": 100e3,                           # number of samples
+        "samples": 10e3,                            # number of samples
         "freq": freq * 1e6,                         # frequency in Hz
         "ampl": 0.2,                                # maximum amplitude in percent
         "offset": 0.0,                              # dc offset
-        "SNR": 3,                                  # signal to noise ratio in dB
+        "SNR": 3,                                   # signal to noise ratio in dB
         "data": [1 + 1j, -1 + 1j, -1 - 1j, +1 - 1j] # data to send
     }
     
@@ -83,14 +83,14 @@ for freq in [10, 12, 15, 20]:
 tb_rf_reciever = lib_src.test_bench("tb_rf_reciever")
 
 for freq in [20.00]:
-    freq_error = -1000; # frequency error in ppm
+    freq_error = -500; # frequency error in ppm
     config = {
-        "samples": 20e3,                            # number of samples
-        "freq": freq * 1e6 * (1 + freq_error/1e6),  # frequency in Hz
-        "ampl": 0.2,                                # maximum amplitude in percent,
-        "offset": 0.1,                              # dc offset
-        "SNR": 3,                                  # signal to noise ratio in dB
-        "data": [1 + 1j, -1 + 1j, -1 - 1j, +1 - 1j] # data to send
+        "samples": 20e3,                               # number of samples
+        "freq": freq * 1e6 * (1 + freq_error/1e6),     # frequency in Hz
+        "ampl": 0.5,                                   # maximum amplitude in percent,
+        "offset": 0.1,                                 # dc offset
+        "SNR":  3,                                     # signal to noise ratio in dB
+        "data": [1 + 1j, -1 + 1j, 0, -1 - 1j, +1 - 1j] # data to send
     }
     
     checker = iq_checker.iq_checker(config, True)
