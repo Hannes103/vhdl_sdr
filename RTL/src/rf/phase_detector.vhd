@@ -144,6 +144,8 @@ begin
                             if s_cfg_mode = '1' then
                                 s_output <= s_result_multiplier;
                             else
+                                -- TODO: Here we should actually output "s_data_q_mult = sign(s_input_i) * s_input_q" but we are not!
+                                -- See: https://wirelesspi.com/costas-loop-for-carrier-phase-synchronization/
                                 s_output <= resize(s_input_q, s_output);
                             end if;
                             

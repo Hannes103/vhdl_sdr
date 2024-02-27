@@ -1,0 +1,148 @@
+\documentclass[12pt,
+	parskip=half,		% Abstände statt Einrückungen bei Absätzen
+	department=FakEI,  	% Farbanpassungen
+	oneside, 			% Spart Papier und erhöht die Lesbarkeit
+	DIV=15,BCOR=10mm, 	% Seitenlayout wie bei Koma-Script
+	svgnames,table, 	% Optionen für xcolor
+	useDepartmentLogo,  % mit Logo der Fakultät
+	bookmarks, raiselinks, pageanchor, hyperindex, colorlinks, hidelinks, % Optionen für hyperref
+]{OTHRreprt}
+
+% Encoding ist UTF-8
+\usepackage[utf8x]{inputenc}
+
+% Sprache ist Deutsch bzw. Englisch
+\usepackage[english,ngerman]{babel}
+
+% Formateinstellungen Links (Extern: Blau, Intern: Schwarz)
+\usepackage[colorlinks=true,linkcolor=red, urlcolor=blue]{hyperref}
+
+% Einstellungen für Kopf bzw. Fußzeile
+\usepackage[automark,headsepline=.4pt,plainheadsepline]{scrlayer-scrpage}         % Erstellung von selbst definierten Kopfzeilen
+\clearpairofpagestyles%\clearscrheadfoot veraltet
+\renewcommand{\chaptermarkformat}{}
+\setkomafont{pageheadfoot}{\normalfont}
+\automark*{chapter}
+
+% Kopfzeile
+\ohead*{\pagemark}
+\ihead*{\leftmark}
+
+% Fußzeile
+\cfoot*{\pagemark}
+\makeatletter
+\ofoot*{\@author}
+\makeatother
+
+% Einstellungen/package das für Abkürzungen genutzt wird.
+\usepackage{acronym}
+
+% Anführungszeichen sollen aus dem Deutschen verwendet werden.
+\usepackage[autostyle=true,german=quotes]{csquotes}
+
+% Mathematik pakete
+\usepackage{amsmath}
+\usepackage{siunitx}
+\sisetup{locale = DE}
+
+% Bilder
+\usepackage{wrapfig}
+\usepackage{graphicx}
+\graphicspath{{images/}}
+
+% Tikz
+\usepackage{tikz}
+\usetikzlibrary{arrows,positioning, calc, shapes.misc, decorations.markings}
+
+% Quellen
+\bibliographystyle{plain}
+
+% Tabellen
+\usepackage{tabularx}
+\usepackage{booktabs}
+
+% Listen
+\usepackage{enumitem}
+\setlist{itemsep=-0.5ex, topsep=0pt}
+
+% Captions
+\usepackage{caption}
+% \captionsetup{font=bf} % Einkommmentieren für Fettgedruckte Captions
+
+% Sonstiges
+\usepackage[most]{tcolorbox} % Schöne farbboxen
+\usepackage{fontawesome} % Bilder aus dem fontawesome set.
+
+% Metadaten des Dokuments
+\documenttype{Projektarbeit}
+\title{FPGA basierter BPSK/QPSK Empfänger}
+\date{22.02.2024}
+
+\author{Hannes Bachl}
+\studentid{3321274}
+
+\studyprogramme{Bachelor Elektro- und Informationstechnik}
+\department{Elektro- und Informationstechnik}
+\firstadvisor{Prof. Dr.-Ing. Florian Aschauer}
+
+
+\makeatletter
+\hypersetup{pdftitle={\@title},%
+	pdfauthor={\@author},%
+}
+\makeatother
+
+% Selbst definierte macro für dieses Script
+\usepackage{macros}
+
+% ================================ START Konfiguration ================================
+
+% ================================ ENDE Konfiguratiobn ================================
+
+\begin{document}
+	\pagenumbering{Roman}	
+	
+	% Titleseite
+	\maketitle
+	
+	% Arbeite wurde Selbsterstellt.
+	\makedeclaration
+	
+	% Abstract
+	\begin{abstract}
+		% Input wird benutzt, damit keine leeren Seiten davor bzw. dahinter entstehen.
+		\input{abstract.tex}	
+	\end{abstract}
+	
+	% Inhaltsverzeichniss
+	\tableofcontents
+	\cleardoublepage
+	% Inhalt
+	\pagenumbering{arabic}	
+	
+	\include{chapter_01.tex}
+	\include{chapter_02.tex}	
+	\include{chapter_03.tex}
+	
+	
+	\cleardoublepage
+	\pagenumbering{Alph}	
+	\thispagestyle{empty}		
+
+	% Literaturverzeichniss
+	\bibliography{references}{}
+
+	% Abkürzungen
+	\input{abbreviations.tex}	
+	
+	% Abbildungsverzeichnis
+	\clearpage
+	\addcontentsline{toc}{chapter}{Abbildungsverzeichnis}\label{Sec:Abbildungen}
+	\listoffigures
+	
+	% Tabellenverzeichnis
+	\clearpage
+	\addcontentsline{toc}{chapter}{Tabellenverzeichnis}\label{Sec:Tabellen}
+	\listoftables
+	
+\end{document}
