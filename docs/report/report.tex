@@ -15,7 +15,7 @@
 \usepackage[english,ngerman]{babel}
 
 % Formateinstellungen Links (Extern: Blau, Intern: Schwarz)
-\usepackage[colorlinks=true,linkcolor=red, urlcolor=blue]{hyperref}
+\usepackage[colorlinks=true,linkcolor=black, urlcolor=blue]{hyperref}
 
 % Einstellungen für Kopf bzw. Fußzeile
 \usepackage[automark,headsepline=.4pt,plainheadsepline]{scrlayer-scrpage}         % Erstellung von selbst definierten Kopfzeilen
@@ -40,6 +40,11 @@
 % Anführungszeichen sollen aus dem Deutschen verwendet werden.
 \usepackage[autostyle=true,german=quotes]{csquotes}
 
+% Code Auszüge
+\usepackage{listings}
+\lstset{language=VHDL,keywordstyle={\bfseries \color{blue}}}
+\lstset{basicstyle=\ttfamily,breaklines=true}
+
 % Mathematik pakete
 \usepackage{amsmath}
 \usepackage{siunitx}
@@ -52,7 +57,12 @@
 
 % Tikz
 \usepackage{tikz}
-\usetikzlibrary{arrows,positioning, calc, shapes.misc, decorations.markings}
+\usetikzlibrary{arrows,positioning, calc, shapes.misc, decorations.markings, decorations.pathreplacing, shapes.geometric}
+
+% CircuiTikZ
+\usepackage{circuitikz}
+\ctikzset{logic ports=ieee}
+\ctikzset{european}
 
 % Quellen
 \bibliographystyle{plain}
@@ -72,6 +82,7 @@
 % Sonstiges
 \usepackage[most]{tcolorbox} % Schöne farbboxen
 \usepackage{fontawesome} % Bilder aus dem fontawesome set.
+\usepackage{pdflscape} % PDF Seiten orientierung
 
 % Metadaten des Dokuments
 \documenttype{Projektarbeit}
@@ -123,7 +134,7 @@
 	\include{chapter_01.tex}
 	\include{chapter_02.tex}	
 	\include{chapter_03.tex}
-	
+	\include{chapter_04.tex}
 	
 	\cleardoublepage
 	\pagenumbering{Alph}	
@@ -132,8 +143,11 @@
 	% Literaturverzeichniss
 	\bibliography{references}{}
 
+	% Anhang
+	\include{appendix.tex}	
+
 	% Abkürzungen
-	\input{abbreviations.tex}	
+	\input{abbreviations.tex}		
 	
 	% Abbildungsverzeichnis
 	\clearpage

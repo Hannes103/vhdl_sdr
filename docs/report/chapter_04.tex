@@ -1,0 +1,54 @@
+\chapter{Fazit}
+Die konzeptionelle als auch technische Umsetzung des Projektes war sehr Lehrreich.
+
+Besonders in dem Bereiche der digitalen Signalverarbeitung (Filter-Design und deren Umsetzung im \acs{FPGA}) als auch im Bereich der Empfängerarchitekturen 
+konnten viele neue Erkenntnisse gewonnen werden.
+Ebenfalls sehr interessant war die Erstellung des \acs{PYNQ}-Images und die damit verbundene Arbeit mit dem Linux-Kernel.
+
+Alles in allem, erfüllt das Projekt die anfangs gestellten Erwartungen, auch wenn er tatsächliche Empfang von Funksignalen nur mäßig funktioniert.
+Hauptproblem hierbei ist wohl die korrekte Auslegung des \acs{PID}-Reglers. (vergleiche: \ref{Sec:PID_opt})
+
+Nach einigem Rumprobieren mit den Reglerparametern ist der Empfang von \acs{QPSK}-Modulierten Signalen zwar möglich, jedoch nur bei \enquote{schnellen} Symbolraten und ohne Pulse-Shaping.
+
+\section{Verbesserungspotential}
+Aufgrund der in Summe deutlich überschrittenen Projektdauer wurden an einigen Stellen Vereinfachungen getroffen die jedoch bei einer Weiterbearbeitung des Projektes
+behoben werden sollte. Der folgende Abschnitt soll einige Möglichkeiten der Verbesserung des Projektes aufzeigen.
+
+\subsection{Auslegung des PID-Reglers} \label{Sec:PID_opt}
+Die Auslegung der Reglerkoeffizienten erfolgte Experimentell, in der Simulation oder auf dem \acs{FPGA} bei einem konstanten Eingangssignal.
+Die so ermittelten Koeffizienten sind jedoch nicht optimal. 
+Sowohl bezüglich auf die Stabilität des Regelkreises als auch in der erreichten Einschwingzeit wären durchaus noch Optimierungen denkbar. 
+
+Eine Verbesserung hier wäre die Erstellung eines möglichst akkuraten Streckenmodelles, anhand dessen anschließend die Reglereinstellung
+nach mathematischen Prinzipien erfolgen könnte, z.B. durch Polstellenplatzierung.
+
+Schwierigkeit hier stellt die Erstellung des Streckenmodelles dar.
+Zusätzliche Komplexität folgt aus der Tatsache, dass die Regelkreisauslegung im Zeit-diskreten erfolgen müsste um die vorhandenen Totzeiten des Systemes berücksichtigen zu können.
+
+\subsection{Ergänzung der Phasen-Regelschleifen für \acs{FSK}}
+Bei korrekter Einstellung der Phasen-Regelschleife wäre es möglich diese für den Empfang von \acs{FSK}-Signalen zu nutzen.
+
+Hierbei wäre es möglich den Stellwert des Phasen-Reglers als Ausgangssignal zu nutzen um so \acs{FSK} modulierte Daten zu dekodieren.
+Damit dies möglich wäre, ist es nötig diesen Stellwert dem Rechenkern zur Verfügung zu stellen. 
+Dies könnte wohl am einfachsten erfolgen, indem die \acs{AXI}-Stream basierte Ausgangsschnittstelle des Reglers dupliziert und einem weiteren \acs{DMA} zugeführt wird.
+
+\subsection{Flexibilisierung des \acs{FIR}-Filters}
+Der aktuell verwendete \acs{FIR}-Kompensationsfilter bietet, im Bezug auf die Flexibilität wenig Optionen, da er nicht Re-konfigurierbar ist.
+Sowohl die Dezimierungsrate als auch die Filterkoeffizienten werden aktuell während der Synthese fixiert.
+
+Die bereits in dem IP-Core vorhandene Konfigurationsschnittstelle könnte genutzt werden um die Koeffizienten des Filters zur Laufzeit zu ändern.
+Hierzu wäre es notwendig eine \acs{AXI}-Lite Registerbank zu erstellen, welche die Re-konfiguration des Filters, anhand der vom Rechenkern erhaltenen Koeffizienten, übernimmt.
+
+Die Dezimierung könnte ebenfalls verbessert werden, indem diese im Nachgang des Filters erfolgt.
+Hierbei wäre es ebenfalls möglich eine \acs{AXI}-Lite basierte Registerbank für die Konfiguration zu nutzen.
+
+\subsection{Inbetriebnahme des zweiten \acs{ADC}-Kanals}
+Im aktuellen Design wird nur ein Kanal des \acs{ADC}s verwendet.
+
+Durch hinzufügen eines zweiten RF-Reciever IP-Blocks wäre es möglich auch den zweiten Kanal des \acs{ADC}s nutzen zu können.
+Zusätzlich wäre es nötig, die notwendige \acs{AXI}-Infrastruktur anzupassen und weitere \acs{DMA}-Controller hinzuzufügen.
+
+Die Schnittstelle für die \acs{ADC}-Konfiguration unterstützt bereits zwei Kanäle.
+
+
+

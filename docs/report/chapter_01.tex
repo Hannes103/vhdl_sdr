@@ -2,33 +2,34 @@
 Inhalt dieses Projektes ist die Erstellung eines \acs{SDR}, wobei ein \acs{FPGA} als Plattform dienen soll. 
 Der \acs{FPGA}-Logikteil soll weiterhin von einem Rechenkern, für die weitere Datenverarbeitung, unterstützt werden.
 
-Da es sich um ein Lernprojekt handelt soll der Fokus, bei der Erstellung der \acs{FPGA}-Schaltung, auf der selbständigen Erstellung aller Signal verarbeitenden Blöcke liegen.
-Komplexe Blöcke welche für die Kommunikation mit dem Rechensystem benötigt wurden \textit{(z.B. AXI-Infrastruktur)} wurden aus Zeitgründen nicht selbst erstellt, sondern das vorhandene
-IP des \acs{FPGA}-Herstellers verwendet.
+Da es sich um ein Lernprojekt handele, sollte der Fokus, bei der Erstellung der \acs{FPGA}-Schaltung, auf der selbständigen Erstellung aller Signal verarbeitenden Blöcke liegen.
+Komplexe Blöcke welche für die Kommunikation mit dem Rechensystem benötigt wurden \textit{(z.B. AXI-Infrastruktur)} wurden aus Zeitgründen nicht selbst erstellt, sondern vorhandene
+IP-Kerne des \acs{FPGA}-Herstellers verwendet.
 
 \section{Anforderungen}
-Zu beginn des Projektes wurde mit der Festlegung der Anforderungen an des Gesamtsystem begonnen, um so die notwendigen Hardware- und Logikkomponenten richtig auslegen zu können.
+Zu beginn des Projektes wurde mit der Festlegung der Anforderungen an des Gesamtsystem begonnen. Folgend konnten die notwendigen Hardware- und Logikkomponenten richtig ausgelegt werden.
 
 Dabei wurden die folgende Anforderungen an das System definiert:
 \begin{enumerate}
 	\item \textbf{Unterstützung der Verwendung eines extern \acs{ADC}}
 	\begin{enumerate}[label*=\arabic*.]
-		\item Abtastfrequenz von mindestens \qty{100}{M\hertz} [$f_{ADC} > \qty{100}{M\hertz}$].
-		\item Datenbreite soll mindestens \qty{12}{bit} betragen [$w_{adc} > 12$]
-		\item Externer anti-Alias Filter notwendig und Abtastung in der ersten Nyquist-Zone.
+		\item Abtastfrequenz von mindestens \qty{100}{M\hertz} [$f_{ADC} \ge \qty{100}{M\hertz}$].
+		\item Datenbreite soll mindestens \qty{12}{bit} betragen [$w_{adc} \ge 12$]
+		\item Externer Antialias Filter notwendig, Abtastung in der ersten Nyquist-Zone.
 	\end{enumerate}
 
 	\item \textbf{Digitale Abwärtsmischung in das Basisband}
 	\begin{enumerate}[label*=\arabic*.]
 		\item Eingangssignal im Frequenzbereich \qty{1}{M\hertz} bis \qty{20}{M\hertz}. [$f_s \in [\qty{1}{M\hertz};\qty{20}{M\hertz}]$]
-		\item Interner \acl{NCO} wobei die Frequenz im Frequenzbereich variable verstellbar sein soll
-		\item Interner komplexer Mischer mit $\qty{16}{bit}$-Breitem $I/Q$ Signal am Ausgang
+		\item Interner \acl{NCO}, wobei die Frequenz innerhalb des Frequenzbereichs konfigurierbar sein soll
+		\item Interner, komplexer Mischer mit $\qty{16}{bit}$-Breitem $I/Q$ Signal am Ausgang
 		\item Dezimierungsfilter mit, zum Synthesezeitpunkt einstellbaren, variablen Dezimierungsverhältnis
+		\item Eine interne \acs{FPGA}-Taktrate von $f_{clk} \ge \qty{200}{M\hertz}$ soll unterstützt werden.
 	\end{enumerate}
 
-	\item \textbf{Carrier-Tracking für \acs{BPSK}/\acs{QPSK} Signale}
+	\item \textbf{Carrier-Tracking für \acs{BPSK} und \acs{QPSK} Signale}
 	\begin{enumerate}[label*=\arabic*.]
-		\item Interner Phasen-Komparator mit folgendem Regler zum konditionieren des lokalen Oszillators.
+		\item Interner Phasen-Komparator mit folgendem Regler zur Konditionierung des lokalen Oszillators.
 		\item Modulation (\acs{BPSK}/\acs{QPSK}) soll zur Laufzeit wechselbar sein.
 		\item Als Regler soll ein $PID$-Regler mit, zur Laufzeit einstellbaren Koeffizienten, sein.
 		\item Das Carrier-Tracking soll Abschaltbar sein und nur aktiv sein wenn das Eingangssignal eine gewisse Amplitude aufweist.
@@ -37,7 +38,7 @@ Dabei wurden die folgende Anforderungen an das System definiert:
 	\item \textbf{Kommunikation mit dem Rechenkern}
 	\begin{enumerate}[label*=\arabic*.]
 		\item Ein Rechenkern soll die \acs{FPGA}-Schaltung verwalten und die weitere Verarbeitung der Nutzdaten übernehmen.
-		\item Die Steuerung der einzelnen Module soll der Rechenkern über eine \acs{AXI}-Lite Registerbank vornehmen.
+		\item Die Steuerung der einzelnen Module soll der Rechenkern über eine \acs{AXI}-Lite Registerbank vornehmen können.
 		\item Die gemischten und dezimierten Nutzdaten sollen via \acl{DMA}-Controller dem Rechenkern zur Verfügung gestellt werden.
 	\end{enumerate}
 \end{enumerate}
@@ -49,8 +50,9 @@ Nach Festlegung der Anforderungen wurde die für die Umsetzung notwendige Hardwa
 Aufgrund der Anforderung $4.1$ sowie dem Fokus der Vorlesung, FPGA-Logik in \acs{CPU}-Rechensysteme zu integrieren, 
 ist es notwendig einen \acs{FPGA} mit eingeschlossenen \acs{CPU}-Kernen auszuwählen.
 
-Die Wahl fiel hier aus Kostengrund und da Know-How sowie die notwendige Tool-Umgebung bereits vorhanden war auf die Zynq-7000 \acs{APSoC} Serie des Herstellers Xilinx.
-Es handelt sich dabei um eine \acs{FPGA}-Fabric der Xilinx 7-Series \textit{(PL,Programmable-Logic)} mit angeschlossenem Dual-Core ARM Cortex-A9 \textit{(PS,Processing-System)}.
+Die Wahl fiel hier aus Kosten- und da Know-How-Gründen sowie aufgrund der bereits Vorhandenen Tool-Umgebung, auf die Zynq-7000 \acs{APSoC} Serie des Herstellers Xilinx.
+Es handelt sich hierbei um eine \acs{FPGA}-Fabric der Xilinx 7-Series \textit{(PL,Programmable-Logic)} mit angeschlossenem Dual-Core ARM Cortex-A9 \textit{(PS,Processing-System)}
+als Rechenkern.
 
 \begin{figure}[h]
 	\centering
@@ -107,8 +109,8 @@ Es handelt sich dabei um eine \acs{FPGA}-Fabric der Xilinx 7-Series \textit{(PL,
 	\caption{Struktur des verwendeten Zynq-7000 \acs{FPGA}}
 \end{figure}
 
-Die in der \acs{FPGA}-Fabric (PL-Teil) vorhandenen Logic-Resourcen \textit{(\acs{BRAM},\acs{CLB},\acs{IOB}, \acs{DSP}-Slices)} werden gemäß des noch zu erstellenden \acs{FPGA}-Designs verdrahtet
-und am Ende mit dem \acs{AXI}-Bus des Rechensystemes (PS-Teil) verbunden. 
+Die in der \acs{FPGA}-Fabric (PL-Teil) vorhandenen Logic-Resourcen \textit{(\acs{BRAM},\acs{CLB},\acs{IOB}, \acs{DSP}-Slices)} werden gemäß des während der Implementierung erstellen
+\acs{FPGA}-Designs verdrahtet und am Ende durch einen \acs{AXI}-Bus mit dem Rechensysteme (PS-Teil) verbunden. 
 
 Da der \acs{FPGA} mit \acs{ADC} Modul selbst beschafft und bezahlt wird war hier vor allem der Preis ausschlaggebend.
 Die Wahl fiel hier auf ein Eclypse Z7 Board der Firma Digilent.
@@ -119,8 +121,8 @@ Die Wahl fiel hier auf ein Eclypse Z7 Board der Firma Digilent.
 	\caption{Bild des Eclypse-Z7 mit ADC und DAC} \faCopyright Digilent Inc. \cite{DIG_EZ7_REF}
 \end{figure}
 
-Hauptgrund für die Auswahl dieses Boards ist der, im Vergleich zu anderen FPGA Mezzanine Card (FMC) basierten Boards, relativ günstige Preis, sowie das Vorhandensein von
-vielen IP-Cores der Firma Digilent welche die Ansteuerung der einzelnen Hardware-Komponenten vereinfachen und dem großen Umfang von verfügbaren Referenzmaterialien.
+Hauptgrund für die Auswahl dieses Boards war der, im Vergleich zu anderen FPGA Mezzanine Card (FMC) basierten Boards, relativ günstige Preis, sowie das Vorhandensein von
+vielen IP-Cores der Firma Digilent welche die Ansteuerung der einzelnen Hardware-Komponenten vereinfachen. Zusätzlich hilfreich war der große Umfang von verfügbaren Referenzmaterialien.
 
 Der von dem Board verwendete \acs{ADC} \textit{(ZModScope 1410-105, AD9648BCPZ-105)} erfüllt alle gestellten Anforderungen.\cite{DIG_EZ7_ADC_REF}
 

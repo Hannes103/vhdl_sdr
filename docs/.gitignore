@@ -1,3 +1,6 @@
+# Keep export PDFs
+!*/export/*.pdf
+
 ## Core latex/pdflatex auxiliary files:
 *.aux
 *.lof
