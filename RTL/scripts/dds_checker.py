@@ -1,6 +1,8 @@
 import peakutils
 import numpy as np
 import math
+import os
+import matplotlib.pyplot as plot
 
 
 class dds_checker:
@@ -17,13 +19,15 @@ class dds_checker:
     For most of these parameters center values and tollerance can be specified that will be verified.
     """
         
-    config : dict = None;
+    config : dict = None
+    
+    output_path : str = None
     
     def __init__(self, config : dict):
         self.config = config
 
 
-    def __analyse_spectrum(self, carrier : list[float]) -> bool:
+    def __analyse_spectrum(self, carrier : list[float], name) -> bool:
         """Performs FFT analysis of the provided carrier signal and reports the calculated parameters."""
         
         # calculate FFT for carrier
@@ -46,6 +50,18 @@ class dds_checker:
         # calculate total harmonic distortion
         sum_harmonics = sum( np.power(10, ampls_sorted[1::] / 10) )
         THD = np.sqrt(sum_harmonics) / np.power(10, ampls_sorted[0] / 20)
+    
+        # generate image
+        fig, ax = plot.subplots(1,1, figsize=(10,10))
+        ax.plot(freq/1e6, spectrum);
+        ax.set_xlabel("f / MHz")
+        ax.set_ylabel("A / dbFS")        
+        ax.set_ylim([-120, 0])
+        ax.grid(True, "both")
+        
+        # save
+        fig.tight_layout()
+        fig.savefig(os.path.join(self.output_path, f"spectrum_{name}.png"))
         
         # return result
         result = {
@@ -123,6 +139,8 @@ class dds_checker:
         If a check failes then this method returns false.
         """
         
+        self.output_path = output_path
+        
         # get carrier from file
         carrier_cos, carrier_sin = np.genfromtxt(f"{output_path}/carrier.txt", encoding="utf8", unpack=True)
         
@@ -130,9 +148,8 @@ class dds_checker:
         carrier_cos = carrier_cos / np.power(2, 15)
         carrier_sin = carrier_sin / np.power(2, 15)
         
-        result_cos = self.__analyse_spectrum(carrier_cos)
-        result_sin = self.__analyse_spectrum(carrier_sin)
-        
+        result_cos = self.__analyse_spectrum(carrier_cos, "cos")
+        result_sin = self.__analyse_spectrum(carrier_sin, "sin")        
         cos_pass = self.__verify_spectrum("cos", result_cos)
         sin_pass = self.__verify_spectrum("sin", result_sin)
 

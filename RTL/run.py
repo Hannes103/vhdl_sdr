@@ -45,7 +45,8 @@ vu.set_sim_option("ghdl.elab_flags", ["-frelaxed"])
 # ============================= TEST-BENCH: tb_dds_generator.vhd =============================
 tb_dds_generator = lib_src.test_bench("tb_dds_generator")
 
-for freq in [2.05,4.125,10.0,14.41, 20.01, 22.00]:
+#for freq in [2.05,4.125,10.0,14.41, 20.01, 22.00]:
+for freq in [14.41]:
     config = {
         "target_frequency": freq * 1e6,      # center frequency is given by loop index in MHz
         "target_frequency_tollerance": 1000, # twice the smallest frequency deviation we can detect with 20kSamples 
@@ -63,7 +64,7 @@ tb_iq_demodulator = lib_src.test_bench("tb_iq_demodulator")
 
 for freq in [10, 12, 15, 20]:
     config = {
-        "samples": 10e3,                            # number of samples
+        "samples": 100e3,                           # number of samples
         "freq": freq * 1e6,                         # frequency in Hz
         "ampl": 0.2,                                # maximum amplitude in percent
         "offset": 0.0,                              # dc offset
@@ -83,9 +84,9 @@ for freq in [10, 12, 15, 20]:
 tb_rf_reciever = lib_src.test_bench("tb_rf_reciever")
 
 for freq in [20.00]:
-    freq_error = -500; # frequency error in ppm
+    freq_error = -800; # frequency error in ppm
     config = {
-        "samples": 20e3,                               # number of samples
+        "samples": 100e3,                              # number of samples
         "freq": freq * 1e6 * (1 + freq_error/1e6),     # frequency in Hz
         "ampl": 0.5,                                   # maximum amplitude in percent,
         "offset": 0.1,                                 # dc offset

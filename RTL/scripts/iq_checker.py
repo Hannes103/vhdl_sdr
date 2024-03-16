@@ -3,7 +3,6 @@ import math
 import os
 
 import matplotlib.pyplot as plot
-from mailcap import show
 
 class iq_checker:
   
@@ -50,39 +49,52 @@ class iq_checker:
     
     def post_check(self, output_path) -> bool:
         # read baseband signal from output file
-        baseband_i, baseband_q, nco_adj = np.genfromtxt(f"{output_path}/baseband.txt", encoding="utf8", unpack=True)
+        input = np.genfromtxt(f"{output_path}/baseband.txt", encoding="utf8")
         
+        baseband_i = input[:,0]
+        baseband_q = input[:,1]    
+            
         # calculate amplitude and phase information
         time = [float(x)*0.32 for x in range(0, len(baseband_i))] # 0.01 us/clock * 32 clocks/sample
         ampl  = np.sqrt( np.square(baseband_i) + np.square(baseband_q) )
         phase = np.rad2deg(np.arctan2( baseband_i, baseband_q ))
         
-        if nco_adj is not None:
-            fig, (ax1, ax2, ax3) = plot.subplots(3,1, figsize=(10,10))
+        if len(input[0]) == 3:
+            nco_adj = input[:,2]
             
-            ax3.plot(time, nco_adj) 
-            ax3.set_ylim([-1, 1])
-            ax3.set_label("t / us")
+            fig, (ax1, ax2, ax3) = plot.subplots(3,1, figsize=(10,15))
+            
+            ax3.plot(time, nco_adj)
+            ax3.set_title("NCO adjustment for carrier recovery") 
+            ax3.set_ylim([-0.3, 0.3])
+            ax3.set_xlabel("t / us", loc='right')
+            ax3.set_ylabel(r"relative frequency adj. / $\frac{f_{carrier}}{f_{adc}}$")
+            ax3.grid(True, "both")
         else:
-            fig, (ax1, ax2) = plot.subplots(3,1, figsize=(10,10))
+            fig, (ax1, ax2) = plot.subplots(2,1, figsize=(10,10))
         
         # plot baseband signal
+        ax1.set_title("Baseband (I/Q)")
         ax1.plot(time, baseband_i)
         ax1.plot(time, baseband_q)
         ax1.legend(["I", "Q"])
-        ax1.set_label("t / us")
+        ax1.set_xlabel("t / us", loc='right')
+        ax1.grid(True, "both")
 
         # plot amplitude and phase
+        ax2.set_title("Baseband (Amplitude/Phase)")
         ax2.plot(time, ampl)
-        ax2.set_label("t / us")
+        ax2.set_ylabel("Ampltiude")
+        ax2.set_xlabel("t / us", loc='right')
         
         # second subplot has a second axis that display the phase in 45° increments
         ax2a = ax2.twinx()
         ax2a.plot(time, phase, color="tab:orange")
         ax2a.set_ylim([-180, 180])
+        ax2a.set_ylabel("Phase / deg")
         ax2a.yaxis.set_ticks([-180, -135, -90, -45, 0, 45, 90, 135, 180])
         ax2a.grid(True, "both")
-        
+    
         self.__color_y_axis(ax2a, "tab:orange")
 
         # save to file and show in interactive window if requested

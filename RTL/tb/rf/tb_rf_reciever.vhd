@@ -96,7 +96,7 @@ begin
                 s_cfg_phase_detector_coef_B <= to_sfixed( K*(1.0/Tn)             , s_cfg_phase_detector_coef_B); -- B = K*(Ta/Tn - (4*Tv)/Ta)
                 s_cfg_phase_detector_coef_C <= to_sfixed( K*(1.0/(2.0*Tn) - 1.0) , s_cfg_phase_detector_coef_C); -- C = K*(Ta/(2*Tn) + (2*Tv)/Ta - 1)
                 
-                s_cfg_phase_detector_threshold <= to_sfixed(2000, s_cfg_phase_detector_threshold);
+                s_cfg_phase_detector_threshold <= to_sfixed(5000, s_cfg_phase_detector_threshold);
                 
                 Toggle(s_StartInputOutput);  
                 
